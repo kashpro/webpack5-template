@@ -5,6 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = !isDev;
@@ -244,16 +245,28 @@ module.exports = {
 //   /*==============================================================================*/
   plugins: [
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin( {
+    new MiniCssExtractPlugin({
       // filename: 'css/app.[contenthash].css',}
       filename: `css/${filename('.css')}`,
       // filename: `css/[name].css`,
-       }),
+    }),
 //     new VueLoaderPlugin(),
     new CopyPlugin({
       patterns: [
-        { from: './_public', to: '', },
+        {from: './_public', to: '', noErrorOnMissing: true}, // для пустой папки _public
       ],
+    }),
+    new ImageMinimizerPlugin({
+      minimizerOptions: {
+        plugins: [
+          // ['webp', {quality: 70}], // если включено - ВСЕ будет завернуто в webp (RIFF-контейнеры)
+          ['pngquant', {quality: [0.6, 0.8]}],
+          ['mozjpeg', {quality: 80}],
+          ['gifsicle', {interlaced: false, optimizationLevel: 3}],
+          ['svgo', {}],
+        ],
+      },
+      loader: false,
     }),
     ...findHtmlTemplates(),
 //     ...findPugTemplates(),
