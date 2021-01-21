@@ -1,0 +1,8 @@
+body {
+	background-color: green;
+	background-image: url("./assets/images/big.svg");
+}
+
+html {
+  user-select: none;
+}
