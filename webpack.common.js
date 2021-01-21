@@ -13,14 +13,17 @@ const filename = (ext = '[ext]') => isDev ? `[name]${ext}` : `[name].[contenthas
 
 const findHtmlTemplates = () => {
   const htmlFiles = glob.sync(__dirname + '/src/**/*.html');
-  const configs = htmlFiles.map( htmlFile => {return {template: htmlFile, filename: path.parse(htmlFile).base};} );
+  const configs = htmlFiles.map( htmlFile => { return {template: htmlFile, filename: path.parse(htmlFile).base};} );
   return configs.map( config => new HtmlWebpackPlugin(config) ); // Имена файлов html должны совпадать в папках src и dist
 }
 
-// findPugTemplates = () => {
-//   return glob.sync(__dirname + '/src/pug/*.pug').
-//          map( (pugFile) => {return new HtmlWebpackPlugin( {template: pugFile, filename: path.parse(pugFile).base.replace(/\.pug/,'.html')} ); } ); // Имена файлов html должны совпадать в папках src и dist
-// }
+const findPugTemplates = () => {
+  const pugFiles = glob.sync(__dirname + '/src/pug/*.pug');
+  const configs = pugFiles.map( pugFile => { return {template: pugFile, filename: path.parse(pugFile).base.replace(/\.pug/,'.html')};} );
+  return configs.map( config => new HtmlWebpackPlugin(config) );
+  // return glob.sync(__dirname + '/src/pug/*.pug').
+  //        map( (pugFile) => {return new HtmlWebpackPlugin( {template: pugFile, filename: path.parse(pugFile).base.replace(/\.pug/,'.html')} ); } ); // Имена файлов html должны совпадать в папках src и dist
+}
 
 module.exports = {
   target: 'web', // для dev-server, live-reload
@@ -220,16 +223,16 @@ module.exports = {
         ],
       },
       /*---------------------------------------*/
-//       {
-//         test: /\.pug$/,
-//         use: [
-//           {
-//             loader: 'pug-loader',
-//             options: {},
-//           },
-//         ],
-//       },
-//       /*---------------------------------------*/
+      {
+        test: /\.pug$/,
+        use: [
+          {
+            loader: 'pug-loader',
+            options: {},
+          },
+        ],
+      },
+      /*---------------------------------------*/
 //       { 
 //         test: /\.vue$/,
 //         use: [
@@ -266,9 +269,8 @@ module.exports = {
           ['svgo', {}],
         ],
       },
-      loader: false,
     }),
     ...findHtmlTemplates(),
-//     ...findPugTemplates(),
+    ...findPugTemplates(),
   ],
 }; 
