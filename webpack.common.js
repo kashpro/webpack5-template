@@ -3,7 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 
@@ -213,6 +213,16 @@ module.exports = {
         },
       },
       /*---------------------------------------*/
+      { 
+        test: /\.vue$/,
+        use: [
+          {
+            loader: 'vue-loader',
+            options: {},
+          },
+        ],
+      },
+      /*---------------------------------------*/
       { // нужен для обработки урлов в html
         test: /\.html$/,
         use: [
@@ -225,24 +235,23 @@ module.exports = {
       /*---------------------------------------*/
       {
         test: /\.pug$/,
-        use: [
+        oneOf: [
           {
-            loader: 'pug-loader',
-            options: {},
+            resourceQuery: /^\?vue/,
+            use: ['pug-plain-loader'],
           },
+          {
+            use: ['pug-loader'],
+          }
         ],
+        // use: [
+        //   {
+        //     loader: 'pug-loader',
+        //     options: {},
+        //   },
+        // ],
       },
       /*---------------------------------------*/
-//       { 
-//         test: /\.vue$/,
-//         use: [
-//           {
-//             loader: 'vue-loader',
-//             options: {},
-//           },
-//         ],
-//       },
-//       /*---------------------------------------*/
     ],
   },
 //   /*==============================================================================*/
@@ -253,7 +262,7 @@ module.exports = {
       filename: `css/${filename('.css')}`,
       // filename: `css/[name].css`,
     }),
-//     new VueLoaderPlugin(),
+    new VueLoaderPlugin(),
     new CopyPlugin({
       patterns: [
         {from: './_public', to: '', noErrorOnMissing: true}, // для пустой папки _public
@@ -274,3 +283,17 @@ module.exports = {
     ...findPugTemplates(),
   ],
 }; 
+
+
+// {
+//     test: /\.pug$/,
+//     oneOf: [{
+//         resourceQuery: /^\?vue/,
+//         use: ["pug-plain-loader"]
+//     }, {
+//         use: [
+//             "html-loader",
+//             "pug-html-loader"
+//         ]
+//     }]
+// }

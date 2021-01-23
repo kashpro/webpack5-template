@@ -1,11 +1,13 @@
-<template>
+<!-- <template>
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
+      <img :src="assetUrl" alt="image">
+
     </div>
     <router-view/>
-  </div>
+  </div> -->
 
   <!-- в биндах парсинг URL ассетов не работает -->
   <!-- https://stackoverflow.com/questions/47313165/how-to-reference-static-assets-within-vue-javascript -->
@@ -16,7 +18,32 @@
     },
   }, -->
 
+<!-- </template> -->
+
+<template lang="pug">
+  #app
+    .nav
+      router-link(to="/") Home2
+      router-link(to="/about") About2
+      p Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia corrupti, culpa architecto nemo reprehenderit odit iusto quaerat beatae ducimus voluptatum at quo perferendis porro, voluptate minus delectus enim repellat, iure!
+      img(:src="assetUrl")
+    router-view
 </template>
+
+<script>
+  export default {
+    computed: {
+      assetUrl() {
+        if (true) {
+          return require(`../assets/images/1.jpg`);
+        } else {
+          return require(`../assets/images/2.gif`);
+        }
+        
+      }
+    }
+  }
+</script>
 
 <style lang="scss">
 #app {
