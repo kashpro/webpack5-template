@@ -1,6 +1,6 @@
 {
   "name": "webpack5-template",
-  "version": "1.0.0",
+  "version": "5.0.0",
   "description": "",
   "scripts": {
     "dev": "cross-env NODE_ENV=development NODE_PUBLIC_PATH=./ webpack --config webpack.dev.js",

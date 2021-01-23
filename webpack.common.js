@@ -20,9 +20,7 @@ const findHtmlTemplates = () => {
 const findPugTemplates = () => {
   const pugFiles = glob.sync(__dirname + '/src/pug/*.pug');
   const configs = pugFiles.map( pugFile => { return {template: pugFile, filename: path.parse(pugFile).base.replace(/\.pug/,'.html')};} );
-  return configs.map( config => new HtmlWebpackPlugin(config) );
-  // return glob.sync(__dirname + '/src/pug/*.pug').
-  //        map( (pugFile) => {return new HtmlWebpackPlugin( {template: pugFile, filename: path.parse(pugFile).base.replace(/\.pug/,'.html')} ); } ); // Имена файлов html должны совпадать в папках src и dist
+  return configs.map( config => new HtmlWebpackPlugin(config) ); // Имена файлов html должны совпадать в папках src и dist
 }
 
 module.exports = {
@@ -37,7 +35,6 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist/'),
     publicPath: process.env.NODE_PUBLIC_PATH,  // для дев-сервера (для несуществующих маршрутов): '/', в остальных случаях: './'
-    // filename: 'js/[name].js',
     filename: `js/${filename('.js')}`,
   },
   /*==============================================================================*/
@@ -50,6 +47,7 @@ module.exports = {
   /*==============================================================================*/
   module: {
     rules: [
+      /*---------------------------------------*/
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -63,26 +61,6 @@ module.exports = {
           },
         ],
       },
-//       /*---------------------------------------*/
-      // {
-      //   test: /\.css$/i,
-      //   use: [
-      //     {
-      //       loader: MiniCssExtractPlugin.loader, // Extract css into files (2)
-      //       options: {
-      //         publicPath: '../', // Добавляет ко всем url() в стилях путь '../'. см. https://stackoverflow.com/questions/53787506/url-loader-file-loader-breaking-relative-paths-in-css-output-using-webpack
-      //       },
-      //     },
-      //     {
-      //       loader: 'css-loader', // Translates CSS into CommonJS (1)
-      //       options: {},
-      //     },
-      //     {
-      //       loader: 'postcss-loader', // Autoprefixer (0)
-      //       options: {},
-      //     },
-      //   ],
-      // },
       /*---------------------------------------*/
       {
         test: /\.s?[ac]ss$/i,
@@ -107,80 +85,7 @@ module.exports = {
           },
         ],
       },
-//       /*---------------------------------------*/
-//       {
-//         test: /\.(png|svg|jpg|gif|webp)$/i,
-//         use: [
-//           {
-//             loader: 'file-loader',
-//             options: {
-//               name: '[path][name].[ext]',
-//               esModule: false,
-//             },
-//           },
-//           // {
-//           //   loader: 'image-webpack-loader', // jpg и png будут завернуты в RIFF-контейнер. Могут быть проблемы с отображением на iphone 12
-//           //   options: {
-//           //     mozjpeg: {
-//           //       progressive: true,
-//           //       quality: 75,
-//           //     },
-//           //     optipng: {
-//           //       enabled: false,
-//           //     },
-//           //     pngquant: {
-//           //       quality: [0.65, 0.90],
-//           //       speed: 4,
-//           //     },
-//           //     gifsicle: {
-//           //       interlaced: false,
-//           //     },
-//           //     webp: {
-//           //       quality: 90,
-//           //     },
-//           //   },
-//           // },
-//         ],
-//       },
-//       /*---------------------------------------*/
-//       {
-//         test: /\.(mp4|mpg|mov)$/i,
-//         use: [
-//           {
-//             loader: 'file-loader',
-//             options: {
-//               name: '[path][name].[ext]',
-//             esModule: false, // Для урлов ассетов в блоках template vue-файлов. Иначе будет [object Module]
-//             },
-//           },
-//         ],
-//       },
-//       /*---------------------------------------*/
-//       {
-//         test: /\.(mp3|wav|ogg)$/i,
-//         use: [
-//           {
-//             loader: 'file-loader',
-//             options: {
-//               name: '[path][name].[ext]',
-//               esModule: false, // Для урлов ассетов в блоках template vue-файлов. Иначе будет [object Module]
-//             },
-//           },
-//         ],
-//       },
-//       /*---------------------------------------*/
-//       {
-//         test: /\.(woff|woff2|eot|ttf|otf)$/i,
-//         use: [
-//           {
-//             loader: 'file-loader',
-//             options: {
-//               name: '[path][name].[ext]',
-//               esModule: false, // Для урлов ассетов в блоках template vue-файлов. Иначе будет [object Module]
-//             },
-//           },
-//         ],
-//       },
+      /*---------------------------------------*/
       {
         test: /\.(mp3|wav|ogg)$/i,
         type: 'asset/resource', // like file-loader, always file copy
@@ -238,29 +143,31 @@ module.exports = {
         oneOf: [
           {
             resourceQuery: /^\?vue/,
-            use: ['pug-plain-loader'],
+            use: [
+              {
+                loader: 'pug-plain-loader',
+                options: {},
+              },
+            ],
           },
           {
-            use: ['pug-loader'],
-          }
+            use: [
+              {
+                loader: 'pug-loader',
+                options: {},
+              },
+            ],
+          },
         ],
-        // use: [
-        //   {
-        //     loader: 'pug-loader',
-        //     options: {},
-        //   },
-        // ],
       },
       /*---------------------------------------*/
     ],
   },
-//   /*==============================================================================*/
+  /*==============================================================================*/
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      // filename: 'css/app.[contenthash].css',}
       filename: `css/${filename('.css')}`,
-      // filename: `css/[name].css`,
     }),
     new VueLoaderPlugin(),
     new CopyPlugin({
@@ -271,7 +178,7 @@ module.exports = {
     new ImageMinimizerPlugin({
       minimizerOptions: {
         plugins: [
-          // ['webp', {quality: 70}], // если включено - ВСЕ будет завернуто в webp (RIFF-контейнеры)
+          // ['webp', {quality: 70}], // если включено - ВСЕ будет завернуто в webp (RIFF-контейнеры). Могут быть проблемы с отображением на iphone 12
           ['pngquant', {quality: [0.6, 0.8]}],
           ['mozjpeg', {quality: 80}],
           ['gifsicle', {interlaced: false, optimizationLevel: 3}],
@@ -282,18 +189,4 @@ module.exports = {
     ...findHtmlTemplates(),
     ...findPugTemplates(),
   ],
-}; 
-
-
-// {
-//     test: /\.pug$/,
-//     oneOf: [{
-//         resourceQuery: /^\?vue/,
-//         use: ["pug-plain-loader"]
-//     }, {
-//         use: [
-//             "html-loader",
-//             "pug-html-loader"
-//         ]
-//     }]
-// }
+};

@@ -26,24 +26,8 @@
       router-link(to="/") Home2
       router-link(to="/about") About2
       p Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia corrupti, culpa architecto nemo reprehenderit odit iusto quaerat beatae ducimus voluptatum at quo perferendis porro, voluptate minus delectus enim repellat, iure!
-      img(:src="assetUrl")
     router-view
 </template>
-
-<script>
-  export default {
-    computed: {
-      assetUrl() {
-        if (true) {
-          return require(`../assets/images/1.jpg`);
-        } else {
-          return require(`../assets/images/2.gif`);
-        }
-        
-      }
-    }
-  }
-</script>
 
 <style lang="scss">
 #app {
