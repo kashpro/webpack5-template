@@ -18,6 +18,7 @@ module.exports = merge(common, {
     inline: true,
     open: true,
     compress: true,
+    publicPath: '/',
   },
   /*==============================================================================*/
 });
